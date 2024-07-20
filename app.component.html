@@ -1,0 +1,182 @@
+<div class="control-section">
+  <ejs-grid
+    [dataSource]="data"
+    allowSorting="true"
+    allowPaging="true"
+    allowResizing="true"
+    allowFiltering="true"
+    [filterSettings]="{ type: 'Excel' }"
+  >
+    <e-columns>
+      <e-column
+        type="checkbox"
+        width="45"
+        headerText=""
+        textAlign="Center"
+      ></e-column>
+      <ng-container *ngFor="let col of columns; let colIndex = index">
+        <e-column
+          [headerText]="col.name"
+          [field]="col.name + '.rowData'"
+          [hidden]="!col.isSelected"
+          [width]="columnWidth"
+          [allowSorting]="true"
+          [allowFiltering]="true"
+          [visible]="col.isSelected"
+          [isPrimaryKey]="col.name === 'Id'"
+        >
+          <ng-template #template let-row let-rowIndex>
+            <div
+              *ngIf="
+                (col.dataType === dataType.String ||
+                  col.dataType === dataType.Bool) &&
+                col.name !== 'Status'
+              "
+              class="{{ col.alignment }}"
+              [ngClass]="{
+                'fw-bold': row[col.name]?.isBold,
+                'status-active':
+                  row[col.name]?.rowData === 'Paid' ||
+                  row[col.name]?.rowData === 'Allocated',
+                'status-archived':
+                  row[col.name]?.rowData === 'Due' ||
+                  row[col.name]?.rowData === 'OverDue' ||
+                  row[col.name]?.rowData === 'Unallocated'
+              }"
+            >
+              <span title="{{ row[col.name]?.rowData }}">
+                {{ row[col.name]?.rowData }}</span
+              >
+            </div>
+
+            <div
+              *ngIf="
+                col.dataType === dataType.DateTime && col.name !== 'Status'
+              "
+              class="{{ col.alignment }}"
+              [ngClass]="{
+                'fw-bold': row[col.name]?.isBold
+              }"
+            >
+              <span title="{{ row[col.name]?.rowData }}">
+                {{ row[col.name]?.rowData }}</span
+              >
+            </div>
+
+            <div
+              *ngIf="
+                col.dataType === dataType.Currency && col.name !== 'Status'
+              "
+              class="{{ col.alignment }} clamp pr-40 white-space-nowrap"
+              [ngClass]="{
+                'fw-bold': row[col.name]?.isBold
+              }"
+            >
+              <span title="£ {{ row[col.name]?.rowData }}">
+                £ {{ row[col.name]?.rowData }}</span
+              >
+            </div>
+
+            <div
+              *ngIf="col.dataType === dataType.Int32 && col.name !== 'Status'"
+              class="{{ col.alignment }} clamp pr-40 white-space-nowrap"
+              [ngClass]="{
+                'fw-bold': row[col.name]?.isBold
+              }"
+            >
+              <span title="£ {{ row[col.name]?.rowData }}">
+                {{ row[col.name]?.rowData }}</span
+              >
+            </div>
+            <div
+              *ngIf="
+                col.dataType === dataType.CurrencySymbol &&
+                col.name !== 'Status'
+              "
+              class="{{ col.alignment }} clamp pr-40 white-space-nowrap"
+              [ngClass]="{
+                'fw-bold': row[col.name]?.isBold
+              }"
+            >
+              <div>
+                <span
+                  title="{{ row[col.name]?.currencySymbol }} {{
+                    row[col.name]?.rowData
+                  }}"
+                >
+                  {{ row[col.name]?.currencySymbol }}
+                  {{ row[col.name]?.rowData }}</span
+                >
+              </div>
+            </div>
+
+            <div
+              *ngIf="col.dataType === dataType.URL && col.name !== 'Status'"
+              class="{{ col.alignment }}"
+              [ngClass]="{
+                'fw-bold': row[col.name]?.isBold
+              }"
+              title="{{ row[col.name]?.rowData }}"
+            >
+              <a
+                *ngIf="row[col.name]?.moduleId > 0"
+                class="link text-primary wmx-100 clamp"
+              >
+                {{ row[col.name]?.rowData }}
+              </a>
+            </div>
+
+            <div
+              *ngIf="
+                col.dataType === dataType.URL &&
+                row[col.name]?.id !== '' &&
+                row[col.name]?.id !== null &&
+                row[col.name]?.id !== undefined &&
+                row[col?.name]?.moduleId === 0 &&
+                col.name !== 'Status'
+              "
+              title="{{ row[col.name]?.rowData }}"
+              [ngClass]="row[col.name]?.isBold ? 'fw-bold' : ''"
+            >
+              <a
+                class="link fw-bold wmx-100 clamp"
+                (click)="redirect(row[col.name]?.id, row[col.name]?.moduleId)"
+              >
+                {{ row[col.name]?.rowData }}
+              </a>
+            </div>
+
+            <div
+              class="clamp"
+              *ngIf="
+                col.dataType === dataType.URL &&
+                (row[col.name]?.id === '' ||
+                  row[col.name]?.id === null ||
+                  row[col.name]?.id === undefined) &&
+                row[col?.name]?.moduleId === 0 &&
+                col.name !== 'Status'
+              "
+              title="{{ row[col.name]?.rowData }}"
+              [ngClass]="row[col.name]?.isBold ? 'fw-bold' : ''"
+            >
+              {{ row[col.name]?.rowData }}
+            </div>
+
+            <div
+              *ngIf="col.name === 'Status'"
+              title="{{ row[col.name]?.rowData }}"
+              [ngClass]="
+                row[col.name]?.rowData === 'Active' ||
+                row[col.name]?.rowData === 'Paid'
+                  ? 'status-active'
+                  : 'status-archived'
+              "
+            >
+              {{ row[col.name]?.rowData }}
+            </div>
+          </ng-template>
+        </e-column>
+      </ng-container>
+    </e-columns>
+  </ejs-grid>
+</div>
